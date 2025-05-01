@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    volumes:
+      - $HOME/dev/misc/minio:/data:Z
+    networks:
+      default:
+        aliases:
+          - minio
+    stdin_open: true
+    tty: true
+    restart: always  # mimics --replace and -d somewhat
+
+networks:
+  default:
+    driver: slirp4netns
+    driver_opts:
+      allow_host_loopback: "true"
